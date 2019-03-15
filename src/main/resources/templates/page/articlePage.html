@@ -1,0 +1,71 @@
+<meta charset="UTF-8"/>
+<div id="f">
+	<div class="pLeft">
+    	<div class="data_list">
+    		<div class="data_list_title">
+    			<i class="layui-icon layui-icon-app"></i>
+				<span class="head">帖子信息</span>
+    		</div>
+	    	<div class="article">
+	    		<div class="title" th:text="${article.name}"></div>
+		    	<div class="info">
+		    		<a href="" target="_blank" th:text="${article.user.userName}"></a>&nbsp;&nbsp;
+		    		分享于&nbsp;&nbsp;<font th:text="${#dates.format(article.publishDate,'yyyy-MM-dd')}"></font>
+		    		&nbsp;&nbsp;查看次数：&nbsp;<font th:text="${article.view}+' 次'"></font>
+		    		&nbsp;&nbsp;所需：<font color="red" th:text="${article.points}"></font>&nbsp;积分
+		    	</div>
+		    	<div align="center">
+		    		<div class="bshare-custom"><a title="分享到QQ空间" class="bshare-qzone"></a><a title="分享到新浪微博" class="bshare-sinaminiblog"></a><a title="分享到人人网" class="bshare-renren"></a><a title="分享到腾讯微博" class="bshare-qqmb"></a><a title="分享到网易微博" class="bshare-neteasemb"></a><a title="更多平台" class="bshare-more bshare-more-icon more-style-addthis"></a><span class="BSHARE_COUNT bshare-share-count">0</span></div><script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/buttonLite.js#style=-1&amp;uuid=&amp;pophcol=2&amp;lang=zh"></script><script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/bshareC0.js"></script>
+		    	</div>
+		    	<div class="downloadBtn" th:if="${article.useful}">
+	    			<button class="layui-btn layui-btn-radius" onclick="download()">&nbsp;&nbsp;立即下载&nbsp;&nbsp;</button>
+	    			<button class="layui-btn layui-btn-radius" onclick="vipDownload()" style="background-color: red">&nbsp;&nbsp;VIP免积分下载&nbsp;&nbsp;</button>
+	    		</div> 
+	    		<div class="downloadBtn" th:if="${!article.useful}">
+	    			<font color="red">系统扫描到百度云分享链接已经失效，本资源暂时不支持下载</font>
+	    		</div> 
+		    	<div id="content" class="content" th:utext="${article.content}"></div>
+	    	</div>
+    	</div>
+    	
+    	<div class="data_list" style="margin-top: 10px">
+    		<div class="data_list_title">
+    			<i class="layui-icon layui-icon-dialogue"></i>
+				<span class="head">评论信息</span>&nbsp;&nbsp;<font style="color: #999;" th:text="'共'+${commentCount}+'条'"></font>
+    		</div>
+    		<div id="userComment" class="userComment">
+    			<textarea id="commentContent" placeholder="请输入评论信息" class="layui-textarea"></textarea>
+    			<button class="layui-btn layui-btn-radius  layui-btn-sm" onclick="submitData()">&nbsp;&nbsp;提交评论&nbsp;&nbsp;</button>
+    		</div>
+    		<div id="commentList" class="commentList"></div>
+    		<div id="articlePage" class="articlePage"></div>
+    	</div>
+    	
+    	<div class="data_list" style="margin-top: 10px">
+    		<div class="data_list_title">
+    			<i class="layui-icon layui-icon-component"></i>
+				<span class="head">相关资源</span>
+    		</div>
+    		<div class="datas" style="height: 250px">
+    			<ul id="relateResource" class="relate">
+    			</ul>
+    		</div>
+    	</div>
+    </div>
+    <div class="pRight">
+      	<div class="data_list">
+    		<div class="data_list_title">
+    			<i class="layui-icon layui-icon-fire"></i>
+				<span class="head">热门资源</span>
+    		</div>
+    		<div class="datas" >
+    			<ul>
+    				<li th:each="hotArticle:${hotArticleList}">
+				  	  	<a th:href="'/article/'+${hotArticle.id}" target="_blank" th:title="${hotArticle.name}" th:text="${#strings.length(hotArticle.name)}>20?${#strings.substring(hotArticle.name,0,21)}:${hotArticle.name}">
+				  	  	</a>
+				    </li>
+    			</ul>
+    		</div>
+    	</div>
+    </div>
+</div>

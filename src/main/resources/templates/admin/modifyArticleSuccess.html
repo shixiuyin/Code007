@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"></meta>
+<title></title>
+<link rel="stylesheet" href="/static/layui/css/layui.css"></link>
+<link rel="stylesheet" href="/static/css/css.css"></link>
+</head>
+	<div style="padding: 20px">
+		<span class="layui-breadcrumb">
+		  <a>首页</a>
+		  <a>资源管理</a>
+		  <a><cite>帖子修改</cite></a>
+		</span>
+		<div style="padding: 20px">
+		   	&nbsp;&nbsp;修改成功！
+		</div>
+	</div>
+</html>
+<script src="/static/layui/layui.js"></script>
+<script th:inline="javascript">
+	/*<![CDATA[*/  
+	layui.use(['element'], function(){
+		  var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+		  
+	});
+
+	
+	/*]]>*/
+</script>

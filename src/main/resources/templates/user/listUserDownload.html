@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"></meta>
+<title th:text="${title}+'-Java1234下载'"></title>
+<link rel="stylesheet" href="/static/layui/css/layui.css"></link>
+<link rel="stylesheet" href="/static/css/css.css"></link>
+</head>
+<body>
+<div class="w960" th:include="common/head::#h" style="padding-bottom: 10px;overflow:visible;"></div>
+<div class="w960">
+	<div style="float: left;width: 200px" th:include="common/menu::#m">
+    </div>
+    <div style="float: right;width: 960px" th:include="user/page/listUserDownloadPage::#f">
+    </div>
+</div>
+<script src="/static/layui/layui.js"></script>
+<script src="/static/js/common.js"></script>
+<script th:inline="javascript">
+	/*<![CDATA[*/  
+	layui.use('element', function(){
+		  var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+		  var $ = layui.jquery; // 使用jquery
+		 
+	});
+	/*]]>*/
+	
+</script>
+</body>
+</html>

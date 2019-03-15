@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>修改百度云链接</title>
+<link rel="stylesheet" href="/static/layui/css/layui.css"></link>
+<style type="text/css">
+
+	table tr td{
+		padding: 10px;
+	}
+
+</style>
+</head>
+<body>
+<div style="padding: 20px">
+	<form method="post">
+		<table>
+			<tr>
+				<td>分享资源：</td>
+				<td><input type="text" id="download1" name="download1" placeholder="请输入百度云分享地址" class="layui-input" autocomplete="off"  style="width: 380px;display: inline;"/>&nbsp;&nbsp;<input type="text" id="password1" name="password1"  autocomplete="off" placeholder="请输入密码" class="layui-input" style="width: 100px;display: inline;" /></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><button class="layui-btn" onclick="submitData();return false;">提交</button>&nbsp;&nbsp;<font id="errorInfo" color="red"></font></td>
+			</tr>
+		</table>
+	</form>
+</div>
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/common.js"></script>
+<script type="text/javascript">
+
+	function submitData(){
+		var download1=$("#download1").val().trim();
+		var password1=$("#password1").val().trim();
+		if(download1=="") { 
+	　　　　     　　 $("#errorInfo").text("请输入百度云分享地址！");
+			  $("#download1").focus();
+	　　　　　　      return false; 
+	　　　} 
+		if(password1=="") { 
+	　　　　     　　 $("#errorInfo").text("请输入密码！");
+			  $("#password1").focus();
+	　　　　　　      return false; 
+	　　　}
+	   var id=getQueryVariable("id");
+	   if(id){
+		   $.post("/user/article/modifyShareLink",{id:id,download1:download1,password1:password1},function(result){
+			  if(result.success){
+				  alert("提交成功！");
+				  parent.reloadPage();
+			  }else{
+				  $("#errorInfo").text(result.errorInfo);
+			  }
+		  },"json");
+	   }
+	}
+	
+	
+	
+	function getQueryVariable(variable){
+	       var query = window.location.search.substring(1);
+	       var vars = query.split("&");
+	       for (var i=0;i<vars.length;i++) {
+	               var pair = vars[i].split("=");
+	               if(pair[0] == variable){return pair[1];}
+	       }
+	       return(false);
+	}
+	
+	
+
+</script>
+</body>
+</html>

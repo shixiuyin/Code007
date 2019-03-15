@@ -1,0 +1,15 @@
+<meta charset="UTF-8"/>
+<div id="f">
+   	<fieldset class="layui-elem-field layui-field-title">
+	  <legend>已下载资源列表</legend>
+	</fieldset>
+    <div class="listUserDownLoad">
+    	<div class="UserDownLoad" th:each="userDownLoad:${userDownLoadList}">
+    		<span th:text="'【'+${#dates.format(userDownLoad.downloadDate,'yyyy-MM-dd HH:mm')}+'】 '"></span>
+    		&nbsp;下载了&nbsp;
+    		<a th:href="'/article/'+${userDownLoad.article.id}" target="_blank" th:title="${userDownLoad.article.name}" th:text="${#strings.length(userDownLoad.article.name)}>37?${#strings.substring(userDownLoad.article.name,0,38)}:${userDownLoad.article.name}"></a>
+    	</div>
+		<div align="center" th:utext="${pageCode}" style="padding-top: 20px">
+		</div>
+    </div>
+</div>

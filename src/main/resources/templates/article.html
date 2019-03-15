@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"></meta>
+<title th:text="${title}+'-Java1234下载'"></title>
+<meta name="description" th:content="${title}" />
+<meta name="keywords" th:content="${title}" />
+<link rel="stylesheet" href="/static/layui/css/layui.css"></link>
+<link rel="stylesheet" href="/static/css/css.css"></link>
+</head>
+<body onload="ResizeImages()">
+<div class="w960" th:include="common/head::#h" style="padding-bottom: 10px;overflow:visible;"></div>
+<div class="w960"  th:include="common/gg::#g"></div>
+<div class="w960"  th:include="page/articlePage::#f"></div>
+<div class="w960"  th:include="common/foot::#h" style="padding-top: 40px"></div>
+<script src="/static/layui/layui.js"></script>
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/common.js"></script>
+<script th:inline="javascript">
+	/*<![CDATA[*/  
+	layui.use(['element','laypage','form'], function(){
+		  var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+		  var $ = layui.jquery; // 使用jquery
+		  var laypage = layui.laypage;
+		  var tMenu=[[${session.tMenu}]];
+		  $("#"+tMenu).css("color","red");
+		
+		  
+		
+		  
+		//调用分页
+		  laypage.render({
+		    elem: 'articlePage'
+		    ,limit:6
+		    ,count: [[${commentCount}]]
+		    ,jump: function(obj){
+		      $("#commentList").empty();
+		      $.post("/comment/list",{"article.id":[[${article.id}]],"page":obj.curr},function(result){
+				  var rows=result;
+				  if(rows.length==0){
+					  $("#commentList").html("<p align='center'>暂无评论</p>");
+				  }
+				  for(var i=0;i<rows.length;i++){
+					  var row=rows[i];
+					  $("#commentList").append("<div class='comment'>"+
+							  "<div class='left_img'>"+
+								  "<img src='/userImage/"+row.user.imageName+"' class='layui-nav-img'/>"+
+								  "</div>"+
+								  "<div class='right'>"+
+									  "<dt class='top'>"+
+									  row.user.userName+
+									  "<span class='time'>"+row.commentDate+"</span>"+
+									  "</dt>"+
+									  "<dd class='bottom'>"+row.content+"</dd>"+
+								  "</div>"+
+							  "</div>");
+				  }
+			  },"json");
+		    }
+		  });
+		
+		  // 相关资源加载
+		  $.post("/article/loadRelatedResource",{"q":[[${article.name}]]},function(result){
+				  var rows=result;
+				  for(var i=0;i<rows.length;i++){
+					  var row=rows[i];
+					  var subName;
+					  if(row.name.length>30){
+						  subName=row.name.substring(0,30);
+					  }else{
+						  subName=row.name;
+					  }
+					  $("#relateResource").append("<li>"+
+							  "<a target='_blank' href='/article/"+row.id+"' title='"+row.name+"'>"+subName+"</a>"+
+							  "</li>");
+				  }
+		 },"json");
+		 
+	});
+	
+	
+	function submitData(){
+		// 下载过这个资源才可以评论
+		
+		if([[${session.currentUser}]]==null){
+			layer.msg("登录后才能评论！");
+			return;
+		}
+		
+		// 判断是否下载过
+		// 添加记录
+		$.post("/user/userDownload/exist",{"id":[[${article.id}]]},function(result){
+			if(result){ // 下载过
+		
+				var content=$("#commentContent").val();
+				if(content==""){
+					layer.msg("请输入评论信息！");
+					return;
+				}
+				$.post("/user/comment/save",{"article.id":[[${article.id}]],"content":content},function(result){
+					if(result.success){
+						$("#commentContent").val("");
+						layer.msg("评论成功，稍后显示！");
+					}
+				},"json");
+				
+			}else{  // 未下载过
+				layer.msg("下载该资源后才能评论！");
+			}
+		},"json");
+		
+		
+		
+		
+	}
+	
+	function vipDownload(){
+		// 判断是否登录
+		if([[${session.currentUser}]]==null){
+			layer.msg("登录后才能下载资源！");
+			return;
+		}
+		
+		$.post("/user/isVip",{},function(result){
+			if(result){
+				
+				// 判断是否下载过
+				// 添加记录
+				$.post("/user/userDownload/exist",{"id":[[${article.id}]]},function(result){
+					if(result){ // 下载过
+						layer.confirm('该资您已经下载过,您确定要下载这个资源吗？', {
+							title:"下载提示"
+							  ,btn: ['确定','取消'] //按钮
+							}, function(){
+								layer.closeAll('dialog');
+								layer.open({
+								  type: 2,
+								  title: '资源下载页面',
+								  shadeClose: true,
+								  shade: 0.8,
+								  area: ['550px', '450'],
+								  content: '/user/article/toVipDownLoadPage/[[${article.id}]]' //iframe的url
+								}); 
+							}, function(){
+							  
+							});
+					}else{  // 未下载过
+						
+					
+						
+							layer.confirm('您确定要下载这个资源吗？', {
+								title:"下载提示"
+								  ,btn: ['确定','取消'] //按钮
+								}, function(){
+									layer.closeAll('dialog');
+									layer.open({
+									  type: 2,
+									  title: '资源下载页面',
+									  shadeClose: true,
+									  shade: 0.8,
+									  area: ['550px', '450'],
+									  content: '/user/article/toVipDownLoadPage/[[${article.id}]]' //iframe的url
+									}); 
+									
+								}, function(){
+								  
+								});
+								
+			
+					}
+				},"json");
+				
+				
+			}else{
+				layer.msg("sorry,您不是VIP用户，不能用此通道！");
+			}
+		},"json");
+	}
+	
+	function download(){
+		
+		// 判断是否登录
+		if([[${session.currentUser}]]==null){
+			layer.msg("登录后才能下载资源！");
+			return;
+		}
+		
+		// 判断是否下载过
+		// 添加记录
+		$.post("/user/userDownload/exist",{"id":[[${article.id}]]},function(result){
+			if(result){ // 下载过
+				layer.confirm('该资您已经下载过，再下载不需要扣除积分,您确定要下载这个资源吗？', {
+					title:"下载提示"
+					  ,btn: ['确定','取消'] //按钮
+					}, function(){
+						layer.closeAll('dialog');
+						layer.open({
+						  type: 2,
+						  title: '资源下载页面',
+						  shadeClose: true,
+						  shade: 0.8,
+						  area: ['550px', '450'],
+						  content: '/user/article/toDownLoadPage/[[${article.id}]]' //iframe的url
+						}); 
+					}, function(){
+					  
+					});
+			}else{  // 未下载过
+				
+				// 添加记录
+				$.post("/user/userDownload/enough",{"points":[[${article.points}]]},function(result){
+					if(result){  // 积分足够
+				
+						layer.confirm('该资源下载需要 <font color="red">[[${article.points}]]</font> 积分,您确定要下载这个资源吗？', {
+							title:"下载提示"
+							  ,btn: ['确定','取消'] //按钮
+							}, function(){
+								layer.closeAll('dialog');
+								layer.open({
+								  type: 2,
+								  title: '资源下载页面',
+								  shadeClose: true,
+								  shade: 0.8,
+								  area: ['550px', '450'],
+								  content: '/user/article/toDownLoadPage/[[${article.id}]]' //iframe的url
+								}); 
+								
+							}, function(){
+							  
+							});
+							
+							}else{ // 积分不够
+					layer.msg("sorry，您的积分不够，不能下载该资源！");
+					return;
+				}
+			},"json");
+				
+				
+			}
+		},"json");
+		
+		
+	}
+	
+	
+	$(document).ready(function(){
+		
+		$.post("/article/updateView",{"id":[[${article.id}]]},function(result){
+		});
+		
+	});
+
+	/*]]>*/
+	
+	
+	
+
+	
+</script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?038436bd5c492acee545c83c4b0d6f6b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</body>
+</html>

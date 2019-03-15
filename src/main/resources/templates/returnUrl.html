@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"></meta>
+<title th:text="${title}+'-Java1234下载'"></title>
+<link rel="stylesheet" href="/static/layui/css/layui.css"></link>
+<link rel="stylesheet" href="/static/css/css.css"></link>
+</head>
+<body>
+<div class="w960" th:include="common/head::#h" style="padding-bottom: 10px;overflow:visible;"></div>
+<div class="w960"  th:include="page/returnUrlPage::#f"></div>
+<div class="w960"  th:include="common/foot::#h" style="padding-top: 40px"></div>
+<script src="/static/layui/layui.js"></script>
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/common.js"></script>
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?038436bd5c492acee545c83c4b0d6f6b";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+</body>
+</html>

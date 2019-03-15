@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"></meta>
+<title th:text="${title}+'-Java1234下载'"></title>
+<link rel="stylesheet" href="/static/layui/css/layui.css"></link>
+<link rel="stylesheet" href="/static/css/css.css"></link>
+</head>
+<body>
+<div class="w960" th:include="common/head::#h" style="padding-bottom: 10px;overflow:visible;"></div>
+<div class="w960">
+	<div style="float: left;width: 200px" th:include="common/menu::#m">
+    </div>
+    <div style="float: right;width: 960px" th:include="user/page/unUsefulArticleManagePage::#f">
+    </div>
+</div>
+<script src="/static/layui/layui.js"></script>
+<script src="/static/js/common.js"></script>
+<script th:inline="javascript">
+	/*<![CDATA[*/  
+	layui.use(['element','form','table'], function(){
+	      var form=layui.form;
+		  var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+		  $ = layui.jquery; // 使用jquery
+		  table = layui.table;
+		  
+		  table.render({
+		    elem: '#unUsefulArticleListTable'
+		    ,url:'/user/article/list'
+	    	,where:{
+	    		useful:false
+			}
+		    ,cols: [[
+			  {type:'checkbox'}
+		      ,{field:'name',  title: '资源名称',templet:formatName}
+		      ,{field:'publishDate', width:180, title: '发布日期', sort: true,align:'center'}
+		      ,{field:'action', width:150, title: '操作',align:'center',templet:formatAction}
+		    ]]
+		    ,page: true
+		  });
+		  
+	});
+	
+
+	function formatName(d){
+		if(d.state==2){
+			return "<a href='/article/"+d.id+"' target='_blank'>"+d.name+"</a>";
+		}else{
+			return d.name;
+		}
+	}
+	
+	
+	function modifyLink(id){
+		layer.open({
+			  type: 2,
+			  title: '修改百度云分享链接',
+			  area: ['700px', '200px'],
+			  content: '/user/modifyShareLink.html?id='+id //iframe的url
+			});
+	}
+	
+	function formatAction(d){
+		return "<button class='layui-btn layui-btn-normal layui-btn-xs' onclick='modifyLink("+d.id+")'><i class='layui-icon layui-icon-edit'></i>修复链接</button>";
+	}
+	
+	/*]]>*/
+	
+	
+	
+</script>
+</body>
+</html>
